@@ -32,7 +32,7 @@ public class DataImportExport {
     private boolean isCreatedInvalidFile [];
     private static int noOfLineExecutedPerThread=50000;
     private static int counterInsertThreadExit=0;
-    private static String databaseConnectionURL="jdbc:sqlserver://localhost:1433;databaseName=CustomerDB;" + "user=sa;password=aA#Itcl123456;";
+    private static String databaseConnectionURL="jdbc:sqlserver://localhost:1433;databaseName=CustomerDB;" + "user=sa;password=a;";
     public static void main(String[] args) {      
         FileInputStream fileInputStream=null;
         List<List<String>> allDataList=new ArrayList<>(); 
