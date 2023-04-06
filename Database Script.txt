@@ -1,0 +1,77 @@
+CREATE DATABASE CustomerDB
+GO
+USE [CustomerDB]
+GO
+CREATE TABLE [dbo].[InValidCustomer](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[FieldOne] [varchar](100) NOT NULL,
+	[FieldTwo] [varchar](100) NOT NULL,
+	[FieldThree] [varchar](100) NOT NULL,
+	[FieldFour] [varchar](10) NOT NULL,
+	[FieldFive] [varchar](20) NOT NULL,
+	[PhoneNo] [varchar](30) NOT NULL,
+	[Email] [varchar](200) NOT NULL,
+	[IP] [varchar](30) NOT NULL
+) ON [PRIMARY]
+
+GO
+CREATE TABLE [dbo].[ValidCustomer](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[FieldOne] [varchar](100) NOT NULL,
+	[FieldTwo] [varchar](100) NOT NULL,
+	[FieldThree] [varchar](100) NOT NULL,
+	[FieldFour] [varchar](10) NOT NULL,
+	[FieldFive] [varchar](20) NOT NULL,
+	[PhoneNo] [varchar](30) NOT NULL,
+	[Email] [varchar](200) NOT NULL,
+	[IP] [varchar](30) NOT NULL
+) ON [PRIMARY]
+GO
+CREATE PROCEDURE [dbo].[CountCustomer]
+AS
+BEGIN
+	SELECT SUM(CountAllValid) AS CountAllValid,SUM(CountAllInvalid) AS CountAllInvalid FROM
+	(SELECT count(ID) AS CountAllValid,0 AS CountAllInvalid FROM ValidCustomer
+	UNION SELECT 0 AS CountAllValid,count(ID) AS CountAllInvalid FROM InValidCustomer)UnionAll		
+END
+GO
+CREATE PROCEDURE [dbo].[InsertCustomer]
+	@IsValid bit,
+	@FieldOne [varchar](100),
+	@FieldTwo [varchar](100),
+	@FieldThree [varchar](100),
+	@FieldFour [varchar](10),
+	@FieldFive [varchar](20),
+	@PhoneNo [varchar](30),
+	@Email [varchar](200),
+	@IP [varchar](30)
+AS
+BEGIN
+	IF @IsValid=1
+	BEGIN
+		INSERT INTO ValidCustomer(FieldOne,FieldTwo,FieldThree,FieldFour,FieldFive,PhoneNo,Email,IP)
+		VALUES(@FieldOne,@FieldTwo,@FieldThree,@FieldFour,@FieldFive,@PhoneNo,@Email,@IP);
+	END
+	ELSE
+	BEGIN
+		INSERT INTO InValidCustomer(FieldOne,FieldTwo,FieldThree,FieldFour,FieldFive,PhoneNo,Email,IP)
+		VALUES(@FieldOne,@FieldTwo,@FieldThree,@FieldFour,@FieldFive,@PhoneNo,@Email,@IP);
+	END				
+END
+GO
+CREATE PROCEDURE [dbo].[SelectCustomer]
+	@IsValid bit,
+	@minIndex int,
+	@maxindex int
+AS
+BEGIN
+	IF @IsValid=1
+	BEGIN
+		SELECT * FROM ValidCustomer WHERE ID BETWEEN @minIndex AND @maxindex;
+	END
+	ELSE
+	BEGIN
+		SELECT * FROM InValidCustomer WHERE ID BETWEEN @minIndex AND @maxindex;
+	END				
+END
+
